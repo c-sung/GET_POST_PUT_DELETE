@@ -1,13 +1,13 @@
-package hedis.io;
+package tw.kewang.testserver;
 
-import hedis.io.api.DataApi;
+import tw.kewang.testserver.api.DataApi;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
-public class HedisApplication extends Application {
+public class ServerApplication extends Application {
 	@Override
 	public Set<Class<?>> getClasses() {
 		Set<Class<?>> restServiceSet = new HashSet<Class<?>>();

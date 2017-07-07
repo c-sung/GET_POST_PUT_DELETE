@@ -1,1 +1,1 @@
-# benchmark-java
+# java-jersey-server
