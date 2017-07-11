@@ -8,8 +8,7 @@ import java.util.ArrayList;
 
 @Path("data")
 public class DataApi {
-    static volatile ArrayList users = new ArrayList();
-    static String ret;
+    static volatile ArrayList<String> users = new ArrayList();
 
     @Produces("application/json")
     @POST
@@ -18,71 +17,68 @@ public class DataApi {
         return Response.ok().entity("OK").build();
     }
 
-    @Path("{name}")
+    static int num = 0;
+
+    @Path("{keyword_GET}")
     @GET
-    public Response get(@Context HttpHeaders headers, @PathParam("name") String ind) {
-        int res;
-        for (int h = 0; h < users.size(); h++) {
-            String gett = (String) users.get(h);
-            System.out.println("gett:" + gett);
-            System.out.println("ind" + ind);
-            res = gett.indexOf(ind);
-            System.out.println(res);
-            if (res >= 0) {
-                ret = (String) users.get(h);
-                break;
-            } else {
-                ret = "查無此人";
-            }
+    public Response get(@Context HttpHeaders headers, @PathParam("keyword_GET") String kw) {
+        boolean checkThis = false;
+        checkThis = detect(kw, checkThis);
+        if (checkThis) {
+            return Response.ok().entity(users.get(num)).build();
+        } else {
+            return Response.ok().entity("查無此人").build();
+
         }
-        return Response.ok().entity(ret).build();
     }
 
-    @Path("{da}")
+
+    @Path("{keyword_DEL}")
     @DELETE
-    public Response del(@Context HttpHeaders headers, @PathParam("da") String ind) {
-        int res;
-        for (int h = 0; h < users.size(); h++) {
-            String gett = (String) users.get(h);
-            System.out.println("gett:" + gett);
-            System.out.println("ind" + ind);
-            res = gett.indexOf(ind);
-            System.out.println(res);
-            if (res >= 0) {
-                users.remove(h);
-                ret="已成功移除資料。";
-                System.out.println(users);
-                break;
-            } else {
-                ret = "查無此人";
-            }
+    public Response del(@Context HttpHeaders headers, @PathParam("keyword_DEL") String kw) {
+        boolean checkThis = false;
+        checkThis = detect(kw, checkThis);
+        if (checkThis) {
+            users.remove(num);
+            System.out.println(users);
+            return Response.ok().entity("已成功移除資料。").build();
+        } else {
+            return Response.ok().entity("查無此人。").build();
         }
-        return Response.ok().entity(ret).build();
-
     }
 
-    @Path("{dat}")
+
+    @Path("{keyword_PUT}")
     @PUT
-    public Response PUT(@Context HttpHeaders headers, @PathParam("dat") String ind,String body) {
-        int res;
-        for (int h = 0; h < users.size(); h++) {
-            String gett = (String) users.get(h);
+    public Response PUT(@Context HttpHeaders headers, @PathParam("keyword_PUT") String kw, String body) {
+        boolean checkThis = false;
+        checkThis = detect(kw, checkThis);
+        if (checkThis) {
+            users.set(num, body);
+            System.out.println(users);
+            return Response.ok().entity("更新成功! \n" + users.get(num)).build();
+        } else {
+            return Response.ok().entity("查無此人").build();
+        }
+    }
+
+
+    static boolean detect(String key, boolean check1) {
+        for (num = 0; num < users.size(); num++) {
+            String gett = users.get(num);
             System.out.println("gett:" + gett);
-            System.out.println("ind" + ind);
-            res = gett.indexOf(ind);
-            System.out.println(res);
-            if (res >= 0) {
-                users.set(h,body);
-                ret="已成功更新資料。" + users.get(h);
-                System.out.println(users);
-                break;
-            } else {
-                ret = "查無此人";
+            System.out.println("kw" + key);
+            if (gett.indexOf(key) >= 0) {
+                check1 = true;
+                return check1;
             }
         }
-        return Response.ok().entity(ret).build();
 
+        return check1;
     }
 }
+
+
+
 
 
